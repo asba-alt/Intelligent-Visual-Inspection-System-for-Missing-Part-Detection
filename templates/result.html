@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Result - Intelligent Visual Inspection</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  </head>
+<body>
+  <div class="container">
+    <h1>Prediction Result</h1>
+    <div class="result">
+      <div class="column">
+        <h3>Original</h3>
+        <img src="{{ image_url }}" alt="uploaded"/>
+      </div>
+      <div class="column">
+        <h3>Grad-CAM Overlay</h3>
+        {% if overlay_url %}
+        <img src="{{ overlay_url }}" alt="overlay"/>
+        {% else %}
+        <div class="warning">Grad-CAM not available.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="summary">
+      <p><strong>Predicted:</strong> {{ predicted }}</p>
+      <p><strong>Confidence (defect):</strong> {{ prob_defect }}</p>
+      <p><strong>Decision:</strong> {{ decision }}</p>
+    </div>
+
+    <p><a href="/">Back</a></p>
+  </div>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Result - Intelligent Visual Inspection</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Inspection Result</h1>
+      <div class="row">
+        <div class="column">
+          <h3>Original</h3>
+          <img src="/{{ image_path }}" alt="uploaded image" class="preview">
+        </div>
+        <div class="column">
+          <h3>Grad-CAM Overlay</h3>
+          <img src="/{{ overlay_path }}" alt="gradcam" class="preview">
+        </div>
+      </div>
+
+      <div class="summary">
+        <p><strong>Predicted label:</strong> {{ label }}</p>
+        <p><strong>Confidence (defect):</strong> {{ '%.3f'|format(prob) }}</p>
+        <p><strong>Decision:</strong> {{ decision }}</p>
+      </div>
+
+      <a href="/">Analyze another image</a>
+    </div>
+  </body>
+</html>

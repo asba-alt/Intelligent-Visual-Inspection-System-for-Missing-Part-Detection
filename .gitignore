@@ -1,0 +1,8 @@
+venv/
+dataset/
+raw/
+__pycache__/
+*.tar
+*.tar.xz
+*.h5
+*.keras
