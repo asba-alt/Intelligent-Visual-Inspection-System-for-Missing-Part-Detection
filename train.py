@@ -39,17 +39,37 @@ def main(args):
     set_seeds()
     train_ds, val_ds = get_datasets(args.dataset)
 
+    # Calculate class weights to handle imbalance
+    import numpy as np
+    from sklearn.utils.class_weight import compute_class_weight
+    
+    # Get all labels from training set
+    labels = []
+    for _, y_batch in train_ds:
+        labels.extend(y_batch.numpy().flatten().tolist())
+    labels = np.array(labels)
+    
+    # Compute class weights
+    class_weights = compute_class_weight('balanced', classes=np.unique(labels), y=labels)
+    class_weight_dict = {0: class_weights[0], 1: class_weights[1]}
+    print(f"Class weights: {class_weight_dict}")
+
     # Simple data normalization
     normalization_layer = tf.keras.layers.Rescaling(1./255)
     train_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
     val_ds = val_ds.map(lambda x, y: (normalization_layer(x), y))
 
     model = build_model(img_size=IMG_SIZE, pretrained=True)
-    model = compile_model(model)
+    
+    # Unfreeze the last 20 layers of base model for fine-tuning
+    for layer in model.layers[1].layers[-20:]:
+        layer.trainable = True
+    
+    model = compile_model(model, lr=1e-5)  # Lower learning rate for fine-tuning
 
     callbacks = []
-    callbacks.append(EarlyStopping(monitor='val_loss', patience=6, restore_best_weights=True))
-    callbacks.append(ModelCheckpoint(MODEL_PATH, monitor='val_loss', save_best_only=True, save_format='keras'))
+    callbacks.append(EarlyStopping(monitor='val_loss', patience=8, restore_best_weights=True))
+    callbacks.append(ModelCheckpoint(MODEL_PATH, monitor='val_loss', save_best_only=True))
     tb_logdir = os.path.join(LOGS_DIR, 'fit')
     callbacks.append(TensorBoard(log_dir=tb_logdir))
 
@@ -57,7 +77,8 @@ def main(args):
         train_ds,
         validation_data=val_ds,
         epochs=args.epochs,
-        callbacks=callbacks
+        callbacks=callbacks,
+        class_weight=class_weight_dict  # Apply class weights
     )
 
     print(f"Training finished. Best model saved to {MODEL_PATH}")

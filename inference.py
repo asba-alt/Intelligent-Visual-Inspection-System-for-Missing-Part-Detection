@@ -27,20 +27,23 @@ def predict(image_path, model=None):
         model = load_model()
     img_norm, img_rgb = preprocess_image(image_path)
     inp = np.expand_dims(img_norm, axis=0)
-    prob_defect = float(model.predict(inp)[0][0])
-    # The dataset/label mapping: Keras orders labels alphabetically unless class_names provided.
-    # We assume CLASSES = ['complete', 'defect'] and defect corresponds to label 1.
-    if prob_defect >= THRESH_FAIL:
+    prob_missing = float(model.predict(inp)[0][0])
+    # Keras orders labels alphabetically: 'complete' (0), 'missing' (1)
+    # Model output: probability of 'missing' class
+    prob_complete = 1.0 - prob_missing
+    
+    # Decision logic based on missing probability
+    if prob_missing >= THRESH_FAIL:
         decision = 'FAIL'
-    elif prob_defect <= THRESH_PASS:
+    elif prob_missing <= (1.0 - THRESH_PASS):  # If prob_complete >= THRESH_PASS
         decision = 'PASS'
     else:
         decision = 'REVIEW'
 
     result = {
-        'prob_defect': prob_defect,
-        'prob_complete': 1.0 - prob_defect,
-        'predicted_label': 'defect' if prob_defect >= 0.5 else 'complete',
+        'prob_defect': prob_missing,
+        'prob_complete': prob_complete,
+        'predicted_label': 'missing' if prob_missing >= 0.5 else 'complete',
         'decision': decision,
     }
     return result

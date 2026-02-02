@@ -66,7 +66,37 @@ def collect_class_images():
     if screw_good.exists():
         files = get_image_files(screw_good)
         images['complete'].extend(files)
-        print(f"Found {len(files)} complete (good) images from screw")
+        print(f"Found {len(files)} complete (good) images from screw/train/good")
+    
+    # Collect 'complete' from screw/test/good
+    screw_test_good = Path('raw/screw/screw/test/good')
+    if screw_test_good.exists():
+        files = get_image_files(screw_test_good)
+        images['complete'].extend(files)
+        print(f"Found {len(files)} complete (good) images from screw/test/good")
+    
+    # Collect 'complete' from transistor/train/good
+    transistor_good = Path('raw/transistor/transistor/train/good')
+    if transistor_good.exists():
+        files = get_image_files(transistor_good)
+        images['complete'].extend(files)
+        print(f"Found {len(files)} complete (good) images from transistor/train/good")
+    
+    # Collect 'complete' from transistor/test/good
+    transistor_test_good = Path('raw/transistor/transistor/test/good')
+    if transistor_test_good.exists():
+        files = get_image_files(transistor_test_good)
+        images['complete'].extend(files)
+        print(f"Found {len(files)} complete (good) images from transistor/test/good")
+    
+    # Collect 'missing' from screw/test/* except 'good'
+    screw_test = Path('raw/screw/screw/test')
+    if screw_test.exists():
+        for subdir in screw_test.iterdir():
+            if subdir.is_dir() and subdir.name.lower() != 'good':
+                files = get_image_files(subdir)
+                images['missing'].extend(files)
+                print(f"Found {len(files)} missing/defect images from screw/{subdir.name}")
     
     # Collect 'missing' from transistor/test/* except 'good'
     transistor_test = Path('raw/transistor/transistor/test')

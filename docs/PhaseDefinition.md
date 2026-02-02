@@ -97,11 +97,10 @@ At its core, the system uses **Convolutional Neural Networks (CNNs)** trained on
   - Transistor
 
 ### Backend (Future Phase)
-- Flask (REST-based inference API)
+- FastAPI (REST-based inference API)
 
 ### Frontend (Future Phase)
-- HTML / CSS
-- Minimal JavaScript
+- Streamlit
 
 ---
 
