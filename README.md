@@ -7,7 +7,7 @@ An AI-powered visual inspection system that detects and classifies 10 different 
 ![TensorFlow](https://img.shields.io/badge/tensorflow-2.10%2B-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-## 🎯 Features
+## Features
 
 - **Multi-Class Detection**: Identifies 10 specific defect types + complete parts
 - **High Accuracy**: ~90% top-3 accuracy on test set
@@ -18,7 +18,7 @@ An AI-powered visual inspection system that detects and classifies 10 different 
 - **RESTful API**: Complete API documentation with Swagger/ReDoc
 - **Transfer Learning**: Fine-tuned MobileNetV2 on MVTec Anomaly Detection Dataset
 
-## 📊 Detected Defect Classes
+## Detected Defect Classes
 
 | Class | Description | Component |
 |-------|-------------|-----------|
@@ -33,7 +33,7 @@ An AI-powered visual inspection system that detects and classifies 10 different 
 | **Thread Side** | Side thread defect | Screw |
 | **Thread Top** | Top thread defect | Screw |
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -89,7 +89,7 @@ streamlit run app_streamlit.py
 - **[Migration Guide](docs/MIGRATION.md)** - Legacy Flask → FastAPI migration notes
 - **[Phase Definition](docs/PhaseDefinition.md)** - Project roadmap and phases
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 .
@@ -118,7 +118,7 @@ streamlit run app_streamlit.py
 └── static/                     # Uploaded images & outputs
 ```
 
-## 🎓 Training Your Own Model
+## Training Your Own Model
 
 ### 1. Prepare Dataset
 ```bash
@@ -145,7 +145,7 @@ python evaluate_multiclass.py
 python inference_multiclass.py dataset_multiclass/test/bent_lead/000.png
 ```
 
-## 🔌 API Usage
+## API Usage
 
 ### Python Example
 ```python
@@ -167,7 +167,7 @@ curl -X POST "http://localhost:8000/predict" \
   -F "file=@image.jpg"
 ```
 
-## 📈 Model Performance
+## Model Performance
 
 - **Training Dataset**: 633 images (10 classes)
 - **Validation Dataset**: 77 images
@@ -177,7 +177,7 @@ curl -X POST "http://localhost:8000/predict" \
 - **Training Time**: 15-20 minutes (CPU), 5-10 minutes (GPU)
 - **Inference Time**: ~100-200ms per image
 
-## 🌐 Remote Access
+## Remote Access
 
 ### Option 1: ngrok (Recommended)
 ```bash
@@ -193,7 +193,7 @@ ngrok http 8502
 3. Run setup commands
 4. Codespaces provides public URLs automatically
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend**: FastAPI, Uvicorn
 - **Frontend**: Streamlit
@@ -202,7 +202,7 @@ ngrok http 8502
 - **Visualization**: Matplotlib, Seaborn
 - **Data Processing**: NumPy, Pandas, scikit-learn
 
-## 📝 Requirements
+## Requirements
 
 See [requirements.txt](requirements.txt) for complete list. Key dependencies:
 - tensorflow>=2.10.0
@@ -211,7 +211,7 @@ See [requirements.txt](requirements.txt) for complete list. Key dependencies:
 - opencv-python>=4.5.0
 - scikit-learn>=1.0.0
 
-## 🤝 Contributing
+## Contributing
 
 Contributions welcome! Please:
 1. Fork the repository
@@ -219,17 +219,17 @@ Contributions welcome! Please:
 3. Make your changes
 4. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **MVTec Anomaly Detection Dataset** for providing high-quality defect images
 - **MobileNetV2** for efficient transfer learning architecture
 - TensorFlow and Keras teams for excellent frameworks
 
-## 📞 Support
+## Support
 
 - **Issues**: [GitHub Issues](https://github.com/asba-alt/Intelligent-Visual-Inspection-System-for-Missing-Part-Detection/issues)
 - **Documentation**: [docs/](docs/)
