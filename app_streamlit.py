@@ -113,23 +113,35 @@ if uploaded_file is not None:
                     
                     with result_col1:
                         st.metric(
-                            label="Predicted Label",
-                            value=result['predicted_label'].upper()
+                            label="Predicted Class",
+                            value=result['predicted_class'].replace('_', ' ').upper()
                         )
                     
                     with result_col2:
-                        prob_percent = result['prob_defect'] * 100
+                        confidence_percent = result['confidence'] * 100
                         st.metric(
-                            label="Defect Confidence",
-                            value=f"{prob_percent:.2f}%"
+                            label="Confidence",
+                            value=f"{confidence_percent:.2f}%"
                         )
                     
                     with result_col3:
-                        decision_emoji = "✅" if result['decision'].upper() == "PASS" else ("❌" if result['decision'].upper() == "FAIL" else "⚠️")
+                        status_emoji = "✅" if result['status'] == "PASS" else ("❌" if result['status'] == "FAIL" else "⚠️")
                         st.metric(
-                            label="Decision",
-                            value=f"{decision_emoji} {result['decision'].upper()}"
+                            label="Status",
+                            value=f"{status_emoji} {result['status']}"
                         )
+                    
+                    # Top 3 predictions
+                    st.markdown("### 🏆 Top 3 Predictions")
+                    top3_col1, top3_col2, top3_col3 = st.columns(3)
+                    
+                    for idx, (col, pred) in enumerate(zip([top3_col1, top3_col2, top3_col3], result['top3_predictions'])):
+                        with col:
+                            st.metric(
+                                label=f"#{idx+1}",
+                                value=pred['class'].replace('_', ' ').title(),
+                                delta=f"{pred['confidence']*100:.1f}%"
+                            )
                     
                     # Detailed info
                     with st.expander("📋 Detailed Information"):
@@ -151,9 +163,17 @@ with st.sidebar:
     2. Click **Analyze Image**
     3. View the **prediction results** and **Grad-CAM** visualization
     
-    ### Classification
-    - **Complete**: All parts present
-    - **Defect**: Missing parts detected
+    ### Classification (10 Classes)
+    - **Complete**: All parts present, no defects
+    - **Bent Lead**: Lead/pin is bent
+    - **Cut Lead**: Lead/pin is cut
+    - **Damaged Case**: Case/body damage
+    - **Manipulated Front**: Front tampering
+    - **Misplaced**: Component misaligned
+    - **Scratch Head**: Scratch on head
+    - **Scratch Neck**: Scratch on neck
+    - **Thread Side**: Side thread defect
+    - **Thread Top**: Top thread defect
     
     ### Grad-CAM
     Shows which areas of the image influenced the model's decision.
@@ -164,4 +184,4 @@ with st.sidebar:
     """)
     
     st.markdown("---")
-    st.caption("Intelligent Visual Inspection System v1.0")
+    st.caption("Intelligent Visual Inspection System v2.0 (Multi-Class)")

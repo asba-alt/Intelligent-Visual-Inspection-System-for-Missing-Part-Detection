@@ -5,9 +5,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import shutil
-from inference import predict, load_model
+from inference_multiclass import predict_multiclass, load_class_names
+import tensorflow as tf
 from gradcam import run_gradcam
-from config import MODEL_PATH
+
+MODEL_PATH = 'models/mobilenetv2_multiclass.keras'
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 OUTPUT_FOLDER = os.path.join('static', 'outputs')
@@ -32,13 +34,16 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Load model once at startup
 model = None
+class_names = []
 
 @app.on_event("startup")
 async def startup_event():
-    global model
+    global model, class_names
     try:
-        model = load_model()
-        print("✅ Model loaded successfully")
+        model = tf.keras.models.load_model(MODEL_PATH)
+        class_names = load_class_names()
+        print(f"✅ Multi-class model loaded: {len(class_names)} classes")
+        print(f"Classes: {class_names}")
     except Exception as e:
         print(f"⚠️ Model not loaded: {e}")
 
@@ -94,7 +99,7 @@ async def predict_route(file: UploadFile = File(...)) -> Dict:
     
     # Run inference
     try:
-        result = predict(save_path, model=model)
+        result = predict_multiclass(save_path, model, class_names)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Inference failed: {str(e)}")
     
@@ -109,9 +114,10 @@ async def predict_route(file: UploadFile = File(...)) -> Dict:
         print(f"Grad-CAM failed: {e}")
     
     return {
-        "predicted_label": result['predicted_label'],
-        "prob_defect": float(result['prob_defect']),
-        "decision": result['decision'],
+        "status": result['status'],
+        "predicted_class": result['predicted_class'],
+        "confidence": float(result['confidence']),
+        "top3_predictions": result['top3_predictions'],
         "image_url": f"/static/uploads/{filename}",
         "overlay_url": f"/static/outputs/{out_name}" if overlay_saved else None
     }

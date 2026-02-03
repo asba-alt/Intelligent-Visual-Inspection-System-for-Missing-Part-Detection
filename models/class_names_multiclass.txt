@@ -1,0 +1,10 @@
+bent_lead
+complete
+cut_lead
+damaged_case
+manipulated_front
+misplaced
+scratch_head
+scratch_neck
+thread_side
+thread_top
